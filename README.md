@@ -1,4 +1,4 @@
-[Uploading 똥스타그램.html…]()
+[dungstagram-web 2.html](https://github.com/user-attachments/files/34673164/dungstagram-web.2.html)
 <!DOCTYPE html>
 <html lang="ko"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -56,7 +56,17 @@ a{color:var(--bl);cursor:pointer}.err{color:#ed4956;margin:0;min-height:1em}.mu{
 <header><span class="logo">💩 똥스타그램</span></header>
 <div id="main"><p class="empty">불러오는 중...</p></div>
 <nav class="hide" id="nav"><button onclick="go('feed')">🏠</button><button onclick="go('people')">🔍</button><button onclick="sheet('post')">➕</button><button onclick="go('profile',me)">👤</button></nav>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
+// ===== 여기에 Firebase 설정을 붙여넣으세요 =====
+const firebaseConfig={
+  apiKey:"여기에_apiKey",
+  authDomain:"여기에_authDomain",
+  projectId:"여기에_projectId",
+  appId:"여기에_appId"
+};
+// ============================================
 const $=s=>document.querySelector(s);
 function h(t,a,...c){const e=document.createElement(t);for(const k in a||{}){if(k==='class')e.className=a[k];else if(k.startsWith('on'))e.addEventListener(k.slice(2),a[k]);else e.setAttribute(k,a[k])}for(const x of c.flat())if(x!=null)e.append(x.nodeType?x:document.createTextNode(x));return e}
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
@@ -167,9 +177,8 @@ function openStory(u,i=0){
   stt=setTimeout(()=>openStory(u,i+1),4500)
 }
 (async()=>{
-  const c=window.claude?await window.claude.use('db'):null;
-  if(!c){$('#main').replaceChildren(h('p',{class:'empty'},'연결할 수 없어요. 로그인된 상태로 링크를 다시 열어줘요.'));return}
-  db=c;
+  if(firebaseConfig.projectId.startsWith('여기에')){$('#main').replaceChildren(h('p',{class:'empty'},'파일 위쪽의 firebaseConfig를 채워주세요'));return}
+  firebase.initializeApp(firebaseConfig);db=firebase.firestore();
   const sv=(store.get('dung_me')||'').split('|');
   if(sv[0]){try{const s=await db.doc('accounts/'+sv[0]).get();if(s.exists&&s.data().pin===sv[1])return start(sv[0])}catch(e){err(e)}}
   $('#main').replaceChildren(authScreen())
